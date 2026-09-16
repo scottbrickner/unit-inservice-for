@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit In-Service Content Request</title>
+<style>
+  :root{
+    --red:#990000;
+    --red-dark:#6e0000;
+    --red-light:#f5e1e1;
+    --gray-bg:#f4f4f4;
+    --border:#c9c9c9;
+    --text:#222;
+    --muted:#666;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",Calibri,Arial,sans-serif;
+    background:var(--gray-bg);
+    color:var(--text);
+    line-height:1.4;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 0 60px;background:#fff;}
+  header.top{
+    background:var(--red);
+    color:#fff;
+    padding:18px 24px;
+  }
+  header.top .brand{font-size:13px;font-weight:600;opacity:.9;letter-spacing:.02em;}
+  header.top h1{margin:4px 0 0;font-size:26px;font-weight:700;}
+  header.top p{margin:6px 0 0;font-size:14px;opacity:.9;max-width:640px;}
+  .notice{
+    margin:20px 24px 0;
+    background:var(--red-light);
+    border:1px solid var(--red);
+    border-radius:4px;
+    padding:12px 16px;
+    font-size:13.5px;
+    color:#5a2020;
+  }
+  .notice strong{color:var(--red);display:block;margin-bottom:4px;font-size:14px;}
+  form{padding:8px 24px 0;}
+  section{margin-top:26px;}
+  .sec-head{
+    background:var(--red);
+    color:#fff;
+    padding:9px 14px;
+    border-radius:3px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+  }
+  .sec-sub{
+    font-size:12.5px;
+    font-style:italic;
+    color:var(--muted);
+    margin:6px 2px 14px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:14px;
+  }
+  .grid.single{grid-template-columns:1fr;}
+  @media (max-width:560px){ .grid{grid-template-columns:1fr;} }
+  label{
+    display:block;
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#555;
+    margin-bottom:4px;
+    letter-spacing:.02em;
+  }
+  label.req::after{content:" *";color:var(--red);}
+  input[type=text], input[type=email], input[type=date], input[type=url], textarea, select{
+    width:100%;
+    padding:8px 9px;
+    font-size:14.5px;
+    font-family:inherit;
+    border:1px solid var(--border);
+    border-radius:3px;
+    background:#fff;
+    color:var(--text);
+  }
+  textarea{resize:vertical;min-height:44px;}
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--red);outline-offset:1px;}
+  .field{margin-bottom:2px;}
+  .radio-row, .check-row{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:3px;
+    margin-bottom:8px;
+    background:#fff;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .radio-row:has(input:checked), .check-row:has(input:checked){
+    border-color:var(--red);
+    background:#fdf3f3;
+  }
+  .radio-row input, .check-row input{margin-top:3px;}
+  .numbered{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+  .numbered .n{font-weight:700;color:var(--red);padding-top:8px;width:16px;flex:none;}
+  .numbered input, .numbered textarea{flex:1;}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;}
+  .submit-bar{
+    margin-top:32px;
+    padding-top:20px;
+    border-top:2px solid var(--border);
+  }
+  button{
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:13px 26px;
+    font-size:15px;
+    font-weight:700;
+    border-radius:4px;
+    cursor:pointer;
+    width:100%;
+  }
+  button:hover{background:var(--red-dark);}
+  button:disabled{background:#aaa;cursor:not-allowed;}
+  button.add-btn{
+    background:#fff;
+    color:var(--red);
+    border:1px solid var(--red);
+    width:auto;
+    padding:7px 14px;
+    font-size:13px;
+    margin-top:2px;
+    margin-bottom:6px;
+  }
+  button.add-btn:hover{background:var(--red-light);}
+  button.add-btn:disabled{background:#f0f0f0;color:#999;border-color:#ccc;}
+  #status{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:4px;
+    font-size:14px;
+    display:none;
+  }
+  #status.ok{display:block;background:#e6f4ea;border:1px solid #2e7d32;color:#1b5e20;}
+  #status.err{display:block;background:#fdecea;border:1px solid #c62828;color:#8e1a1a;}
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    padding:24px 24px 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Keck Medicine of USC &nbsp;|&nbsp; NPD &amp; Nursing Excellence</div>
+    <h1>Unit-Level In-Service Content Request</h1>
+    <p>A short planning form for staff proposing a unit in-service — keeps content focused, objectives measurable, and delivery inside a 5–8 minute microlearning window.</p>
+  </header>
+
+  <div class="notice">
+    <strong>This form is a content-planning tool, not a Clinical Ladder submission.</strong>
+    If this in-service is also going toward Clinical Ladder credit, you still need the separate Standardized In-Service Approval Form signed by unit leadership per the CL Guidebook — that process is unchanged and this form does not replace it.
+  </div>
+
+  <form id="reqForm">
+    <section>
+      <div class="sec-head">1 &nbsp;Presenter &amp; Unit Info</div>
+      <div class="grid">
+        <div class="field"><label class="req" for="presenterName">Presenter Name(s)</label><input required id="presenterName" name="presenterName" type="text"></div>
+        <div class="field"><label for="credentials">Credentials (e.g., RN, CCRN)</label><input id="credentials" name="credentials" type="text"></div>
+        <div class="field"><label class="req" for="unit">Unit / Department</label><input required id="unit" name="unit" type="text"></div>
+        <div class="field"><label class="req" for="email">Email</label><input required id="email" name="email" type="email"></div>
+        <div class="field"><label for="dateSubmitted">Date Submitted</label><input readonly id="dateSubmitted" name="dateSubmitted" type="date"></div>
+        <div class="field"><label for="targetDeliveryDate">Target Delivery Date</label><input id="targetDeliveryDate" name="targetDeliveryDate" type="date"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">2 &nbsp;Content Overview</div>
+      <div class="grid single">
+        <div class="field"><label class="req" for="proposedTitle">Proposed Title</label><input required id="proposedTitle" name="proposedTitle" type="text"></div>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="focusArea">Clinical Focus Area</label><input id="focusArea" name="focusArea" type="text" placeholder="e.g., hemodynamics, devices, safety"></div>
+        <div class="field"><label for="targetAudience">Target Audience</label><input id="targetAudience" name="targetAudience" type="text" placeholder="e.g., all RN staff, new grads"></div>
+      </div>
+
+      <label class="req" style="margin-top:16px;">Delivery Format <span style="text-transform:none;font-weight:400;color:var(--muted);">(select all that apply)</span></label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Live, in-person"> Live, in-person</label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Live, virtual (staff meeting)"> Live, virtual (staff meeting)</label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Job aid / quick-reference"> Job aid / quick-reference</label>
+      <div class="hint" id="deliveryFormatErr" style="display:none;color:var(--red);">Select at least one delivery format.</div>
+
+      <label style="margin-top:10px;">Length — microlearning standard: 5–8 minutes max</label>
+      <label class="check-row"><input required type="checkbox" id="lengthConfirmed" name="lengthConfirmed"> Confirmed: content fits within 5–8 minutes as scoped below. If it doesn't fit, cut content — don't extend the time.</label>
+    </section>
+
+    <section>
+      <div class="sec-head">3 &nbsp;Learning Objectives</div>
+      <div class="sec-sub">Write 2–3 objectives using measurable action verbs. Avoid "understand" or "know" — use verbs like identify, describe, demonstrate, differentiate, prioritize.</div>
+      <div class="hint" style="margin-bottom:8px;">By the end of this session, the learner will be able to:</div>
+      <div id="objectivesContainer">
+        <div class="numbered"><span class="n">1.</span><input required class="obj-input" type="text"></div>
+        <div class="numbered"><span class="n">2.</span><input class="obj-input" type="text"></div>
+        <div class="numbered"><span class="n">3.</span><input class="obj-input" type="text"></div>
+      </div>
+      <button type="button" id="addObjectiveBtn" class="add-btn">+ Add another objective</button>
+      <div class="hint" id="objectiveCapHint" style="display:none;">If you're past 4–5 objectives, this probably won't fit in 5–8 minutes — consider splitting it into a second in-service.</div>
+    </section>
+
+    <section>
+      <div class="sec-head">4 &nbsp;Content Outline</div>
+      <div class="sec-sub">3–5 key points max — if it doesn't support an objective above, cut it.</div>
+      <div class="numbered"><span class="n">1.</span><input required name="outline1" type="text"></div>
+      <div class="numbered"><span class="n">2.</span><input required name="outline2" type="text"></div>
+      <div class="numbered"><span class="n">3.</span><input name="outline3" type="text"></div>
+      <div class="numbered"><span class="n">4.</span><input name="outline4" type="text"></div>
+      <div class="numbered"><span class="n">5.</span><input name="outline5" type="text"></div>
+    </section>
+
+    <section>
+      <div class="sec-head">5 &nbsp;Evidence Base / Source</div>
+      <div class="grid single">
+        <div class="field"><label class="req" for="evidenceSource">Reference / Guideline / Policy Cited</label><textarea required id="evidenceSource" name="evidenceSource"></textarea></div>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="evidenceDate">Date of Most Recent Evidence</label><input id="evidenceDate" name="evidenceDate" type="text" placeholder="e.g., 2024"></div>
+        <div class="field"><label for="cernerWorkflow">Applies to Cerner Documentation? If yes, note workflow</label><input id="cernerWorkflow" name="cernerWorkflow" type="text"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head">6 &nbsp;Repository &amp; Dissemination</div>
+      <div class="sec-sub">For central hub indexing — tagging content now means nothing has to be re-worked later.</div>
+      <div class="grid">
+        <div class="field"><label for="tags">Keywords / Tags</label><input id="tags" name="tags" type="text" placeholder="comma-separated"></div>
+        <div class="field"><label for="serviceLine">Related Service Line / Population</label><input id="serviceLine" name="serviceLine" type="text"></div>
+      </div>
+      <div class="grid single">
+        <div class="field"><label for="fileLink">File(s) / Link (slides, job aid — SharePoint/OneDrive link)</label><input id="fileLink" name="fileLink" type="url" placeholder="https://..."></div>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="reviewDate">Content Review Date (freshness check)</label><input id="reviewDate" name="reviewDate" type="date"></div>
+        <div class="field">
+          <label class="req">OK to Share Beyond Originating Unit?</label>
+          <label class="radio-row" style="display:inline-flex;width:auto;margin-right:8px;"><input required type="radio" name="shareBeyondUnit" value="Yes"> Yes</label>
+          <label class="radio-row" style="display:inline-flex;width:auto;"><input required type="radio" name="shareBeyondUnit" value="No"> No</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="submit-bar">
+      <button type="submit" id="submitBtn">Submit Content Request</button>
+      <div id="status"></div>
+    </div>
+  </form>
+
+  <footer>Content Request Form — v1 — Sept 2026 &nbsp;|&nbsp; Independent of the Clinical Ladder Standardized In-Service Approval Form</footer>
+</div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────────────
+  // Paste the "When an HTTP request is received" trigger URL here once the
+  // Power Automate flow is saved (see build guide, Section 3).
+  const FLOW_URL = "https://cb8eafee1f93e9bcaf1dba3760eca1.0d.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/12/workflows/d3b5c0b2c8d24e4a846768a6b138a91b/triggers/manual/paths/invoke?api-version=1";
+  // ────────────────────────────────────────────────────────────────────────
+
+  document.getElementById('dateSubmitted').value = new Date().toISOString().slice(0,10);
+
+  // ── Dynamic "add another objective" ───────────────────────────────────
+  const OBJECTIVE_MAX = 6;
+  const objectivesContainer = document.getElementById('objectivesContainer');
+  const addObjectiveBtn = document.getElementById('addObjectiveBtn');
+  const objectiveCapHint = document.getElementById('objectiveCapHint');
+
+  function objectiveCount() { return objectivesContainer.querySelectorAll('.obj-input').length; }
+
+  function renumberObjectives() {
+    objectivesContainer.querySelectorAll('.numbered').forEach((row, i) => {
+      row.querySelector('.n').textContent = (i + 1) + '.';
+    });
+  }
+
+  addObjectiveBtn.addEventListener('click', () => {
+    if (objectiveCount() >= OBJECTIVE_MAX) return;
+    const row = document.createElement('div');
+    row.className = 'numbered';
+    row.innerHTML = '<span class="n"></span><input class="obj-input" type="text">';
+    objectivesContainer.appendChild(row);
+    renumberObjectives();
+    row.querySelector('input').focus();
+    if (objectiveCount() >= OBJECTIVE_MAX) {
+      addObjectiveBtn.disabled = true;
+      addObjectiveBtn.textContent = 'Max objectives reached';
+    }
+    objectiveCapHint.style.display = objectiveCount() >= 4 ? 'block' : 'none';
+  });
+
+  const form = document.getElementById('reqForm');
+  const statusEl = document.getElementById('status');
+  const btn = document.getElementById('submitBtn');
+  const deliveryFormatErr = document.getElementById('deliveryFormatErr');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.className = '';
+    statusEl.style.display = 'none';
+    deliveryFormatErr.style.display = 'none';
+
+    if (FLOW_URL.indexOf('PASTE_YOUR') === 0) {
+      statusEl.textContent = 'This form isn\'t wired to a flow yet — paste the Power Automate URL into FLOW_URL in the page source.';
+      statusEl.className = 'err';
+      return;
+    }
+
+    const deliveryFormats = Array.from(form.querySelectorAll('input[name="deliveryFormat"]:checked')).map(i => i.value);
+    if (deliveryFormats.length === 0) {
+      deliveryFormatErr.style.display = 'block';
+      deliveryFormatErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const fd = new FormData(form);
+    const get = (k) => (fd.get(k) || '').toString().trim();
+
+    const objectiveValues = Array.from(objectivesContainer.querySelectorAll('.obj-input')).map(i => i.value.trim());
+    const objectives = objectiveValues.filter(Boolean).map((o, i) => `${i + 1}. ${o}`).join('\n');
+    const outline = [get('outline1'), get('outline2'), get('outline3'), get('outline4'), get('outline5')]
+      .filter(Boolean).map((o, i) => `${i + 1}. ${o}`).join('\n');
+
+    const payload = {
+      presenterName: get('presenterName'),
+      credentials: get('credentials'),
+      unit: get('unit'),
+      email: get('email'),
+      dateSubmitted: get('dateSubmitted'),
+      targetDeliveryDate: get('targetDeliveryDate'),
+      proposedTitle: get('proposedTitle'),
+      focusArea: get('focusArea'),
+      targetAudience: get('targetAudience'),
+      deliveryFormat: deliveryFormats,
+      lengthConfirmed: form.lengthConfirmed.checked,
+      learningObjectives: objectives,
+      contentOutline: outline,
+      evidenceSource: get('evidenceSource'),
+      evidenceDate: get('evidenceDate'),
+      cernerWorkflow: get('cernerWorkflow'),
+      tags: get('tags'),
+      serviceLine: get('serviceLine'),
+      fileLink: get('fileLink'),
+      reviewDate: get('reviewDate'),
+      shareBeyondUnit: get('shareBeyondUnit')
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      // mode:'no-cors' + Content-Type: text/plain avoids the CORS preflight
+      // that a JSON POST would otherwise trigger against the Power Automate
+      // endpoint. The trigger still parses the body as JSON on arrival — see
+      // the build guide's "CORS gotcha" note. Because the response is opaque
+      // under no-cors, we can't confirm success from the reply itself; a
+      // resolved promise here means the request left the browser cleanly.
+      await fetch(FLOW_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      statusEl.textContent = 'Submitted. Your NPD team will follow up if anything needs revision before delivery.';
+      statusEl.className = 'ok';
+      form.reset();
+      document.getElementById('dateSubmitted').value = new Date().toISOString().slice(0,10);
+      // drop any dynamically-added objective rows back to the original 3
+      Array.from(objectivesContainer.querySelectorAll('.numbered')).slice(3).forEach(row => row.remove());
+      renumberObjectives();
+      addObjectiveBtn.disabled = false;
+      addObjectiveBtn.textContent = '+ Add another objective';
+      objectiveCapHint.style.display = 'none';
+    } catch (err) {
+      statusEl.textContent = 'Something went wrong sending this — check your connection and try again, or contact your NPD team directly.';
+      statusEl.className = 'err';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Content Request';
+    }
+  });
+</script>
+</body>
+</html>
