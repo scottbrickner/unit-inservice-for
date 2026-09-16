@@ -363,17 +363,19 @@
 
   // This form submits natively (no fetch) so FormSubmit's _autoresponse
   // feature works — see CONFIG note above. Custom validation + computed
-  // fields still need to run first, so we intercept the first 'submit',
-  // do our prep, then re-fire it programmatically and let it through the
-  // second time. requestSubmit() re-triggers this same listener, which is
-  // why `readyToSubmit` guards against re-validating infinitely.
-  let readyToSubmit = false;
-
+  // fields still need to run first, so we always preventDefault the
+  // browser's own submit, do our checks/prep, then trigger the real
+  // submission ourselves with form.submit() (the plain DOM method, which
+  // does NOT re-fire the 'submit' event — unlike requestSubmit() — so
+  // there's no re-entrancy to guard against). Because form.submit()
+  // bypasses native required-field checking, we call form.reportValidity()
+  // first to get that check (and its native "please fill this out" bubble)
+  // back.
   form.addEventListener('submit', (e) => {
-    if (readyToSubmit) return; // second pass — let the real network submit happen
-
     e.preventDefault();
     deliveryFormatErr.style.display = 'none';
+
+    if (!form.reportValidity()) return;
 
     const deliveryFormats = Array.from(form.querySelectorAll('input[name="deliveryFormat_opt"]:checked')).map(i => i.value);
     if (deliveryFormats.length === 0) {
@@ -434,8 +436,7 @@
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
-    readyToSubmit = true;
-    form.requestSubmit();
+    form.submit();
   });
 </script>
 </body>
