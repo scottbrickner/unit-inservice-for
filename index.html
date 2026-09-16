@@ -171,7 +171,18 @@
     If this in-service is also going toward Clinical Ladder credit, you still need the separate Standardized In-Service Approval Form signed by unit leadership per the CL Guidebook — that process is unchanged and this form does not replace it.
   </div>
 
-  <form id="reqForm">
+  <div class="notice" style="background:#eef5ee;border-color:#2e7d32;color:#1b4d1e;">
+    <strong>After you submit, check your email.</strong>
+    You'll receive an automatic message requesting a copy of your presentation, article, slides, or job aid — just reply to that email with the file attached, or upload it to the shared folder linked in that message.
+  </div>
+
+  <form id="reqForm" method="POST">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="https://scottbrickner.github.io/thank-you.html">
+    <input type="hidden" name="_autoresponse" value="Thanks for submitting your Unit In-Service content request! To finish up, please reply directly to THIS email with your presentation, slides, article, or job aid attached (PowerPoint, PDF, Word, or similar). If it's easier, you can instead upload your file to this shared folder: https://keckmedicine-my.sharepoint.com/:f:/g/personal/scott_brickner2_med_usc_edu/IgA6MKtGlnsDQ4o3M2a64yqrAbPJ0jN02zpnGYsF2ge6yCw?e=OVYcSi -- no reply needed if you do that. Your NPD team will follow up if anything needs revision before delivery. Questions? Contact Scott Brickner at scott.brickner2@med.usc.edu.">
+    <input type="hidden" name="_subject" id="subjectField" value="New In-Service Content Request">
+    <input type="hidden" name="_replyto" id="replytoField" value="">
     <section>
       <div class="sec-head">1 &nbsp;Presenter &amp; Unit Info</div>
       <div class="grid">
@@ -195,13 +206,15 @@
       </div>
 
       <label class="req" style="margin-top:16px;">Delivery Format <span style="text-transform:none;font-weight:400;color:var(--muted);">(select all that apply)</span></label>
-      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Live, in-person"> Live, in-person</label>
-      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Live, virtual (staff meeting)"> Live, virtual (staff meeting)</label>
-      <label class="radio-row"><input type="checkbox" name="deliveryFormat" value="Job aid / quick-reference"> Job aid / quick-reference</label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat_opt" value="Live, in-person"> Live, in-person</label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat_opt" value="Live, virtual (staff meeting)"> Live, virtual (staff meeting)</label>
+      <label class="radio-row"><input type="checkbox" name="deliveryFormat_opt" value="Job aid / quick-reference"> Job aid / quick-reference</label>
       <div class="hint" id="deliveryFormatErr" style="display:none;color:var(--red);">Select at least one delivery format.</div>
+      <input type="hidden" name="deliveryFormat" id="deliveryFormatField" value="">
 
       <label style="margin-top:10px;">Length — microlearning standard: 5–8 minutes max</label>
-      <label class="check-row"><input required type="checkbox" id="lengthConfirmed" name="lengthConfirmed"> Confirmed: content fits within 5–8 minutes as scoped below. If it doesn't fit, cut content — don't extend the time.</label>
+      <label class="check-row"><input required type="checkbox" id="lengthConfirmed" name="lengthConfirmed_cb"> Confirmed: content fits within 5–8 minutes as scoped below. If it doesn't fit, cut content — don't extend the time.</label>
+      <input type="hidden" name="lengthConfirmed" id="lengthConfirmedField" value="">
     </section>
 
     <section>
@@ -220,11 +233,13 @@
     <section>
       <div class="sec-head">4 &nbsp;Content Outline</div>
       <div class="sec-sub">3–5 key points max — if it doesn't support an objective above, cut it.</div>
-      <div class="numbered"><span class="n">1.</span><input required name="outline1" type="text"></div>
-      <div class="numbered"><span class="n">2.</span><input required name="outline2" type="text"></div>
-      <div class="numbered"><span class="n">3.</span><input name="outline3" type="text"></div>
-      <div class="numbered"><span class="n">4.</span><input name="outline4" type="text"></div>
-      <div class="numbered"><span class="n">5.</span><input name="outline5" type="text"></div>
+      <div class="numbered"><span class="n">1.</span><input required name="outline1_raw" type="text"></div>
+      <div class="numbered"><span class="n">2.</span><input required name="outline2_raw" type="text"></div>
+      <div class="numbered"><span class="n">3.</span><input name="outline3_raw" type="text"></div>
+      <div class="numbered"><span class="n">4.</span><input name="outline4_raw" type="text"></div>
+      <div class="numbered"><span class="n">5.</span><input name="outline5_raw" type="text"></div>
+      <input type="hidden" name="contentOutline" id="contentOutlineField" value="">
+      <input type="hidden" name="learningObjectives" id="learningObjectivesField" value="">
     </section>
 
     <section>
@@ -241,10 +256,40 @@
     <section>
       <div class="sec-head">6 &nbsp;Repository &amp; Dissemination</div>
       <div class="sec-sub">For central hub indexing — tagging content now means nothing has to be re-worked later.</div>
+      <label style="margin-top:6px;">Keywords / Topical Tags <span style="text-transform:none;font-weight:400;color:var(--muted);">(select all that apply)</span></label>
       <div class="grid">
-        <div class="field"><label for="tags">Keywords / Tags</label><input id="tags" name="tags" type="text" placeholder="comma-separated"></div>
-        <div class="field"><label for="serviceLine">Related Service Line / Population</label><input id="serviceLine" name="serviceLine" type="text"></div>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Hemodynamics"> Hemodynamics</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Devices &amp; Equipment"> Devices &amp; Equipment</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Patient Safety"> Patient Safety</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Infection Prevention"> Infection Prevention</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Medication Safety"> Medication Safety</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Documentation / Cerner Workflow"> Documentation / Cerner Workflow</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Communication &amp; Teamwork"> Communication &amp; Teamwork</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Emergency / Rapid Response"> Emergency / Rapid Response</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Wound Care"> Wound Care</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Pain Management"> Pain Management</label>
+        <label class="check-row"><input type="checkbox" name="tags_opt" value="Professional Development"> Professional Development</label>
       </div>
+      <div class="field" style="margin-top:4px;"><label for="tagsOther">Other topic (optional)</label><input id="tagsOther" name="tagsOther" type="text" placeholder="If not listed above"></div>
+      <input type="hidden" name="tags" id="tagsField" value="">
+
+      <label style="margin-top:16px;">Related Service Line / Population <span style="text-transform:none;font-weight:400;color:var(--muted);">(select all that apply)</span></label>
+      <div class="grid">
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Critical Care"> Critical Care</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="ICU"> ICU</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Cardiac Surgery / CTICU"> Cardiac Surgery / CTICU</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Acute Care"> Acute Care</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Emergency"> Emergency</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Perioperative / OR"> Perioperative / OR</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Oncology"> Oncology</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Women's &amp; Children's"> Women's &amp; Children's</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Behavioral Health"> Behavioral Health</label>
+        <label class="check-row"><input type="checkbox" name="serviceLine_opt" value="Outpatient / Ambulatory"> Outpatient / Ambulatory</label>
+      </div>
+      <div class="field" style="margin-top:4px;"><label for="serviceLineOther">Other (optional)</label><input id="serviceLineOther" name="serviceLineOther" type="text" placeholder="If not listed above"></div>
+      <input type="hidden" name="serviceLine" id="serviceLineField" value="">
+      <input type="hidden" name="csv_header" id="csvHeaderField" value="">
+      <input type="hidden" name="csv_row" id="csvRowField" value="">
       <div class="grid single">
         <div class="field"><label for="fileLink">File(s) / Link (slides, job aid — SharePoint/OneDrive link)</label><input id="fileLink" name="fileLink" type="url" placeholder="https://..."></div>
       </div>
@@ -269,12 +314,15 @@
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────
-  // Submissions go to FormSubmit.co, which emails the data to this address.
+  // Submissions go to FormSubmit.co, which emails the data to this address
+  // AND (via the _autoresponse hidden field above) auto-replies to whoever
+  // submitted the form. Autoresponse only works with a real form POST, not
+  // fetch/AJAX — that's why this form submits natively (browser navigates to
+  // the _next URL on success) instead of via JS fetch like the first version.
   // First submission after deploying triggers a one-time "Activate Form"
-  // confirmation email to EMAIL_TO — click that link once and every
-  // submission after it sends automatically. No account/API key needed.
-  const EMAIL_TO = "scott.brickner2@med.usc.edu";
-  const FORMSUBMIT_URL = "https://formsubmit.co/ajax/" + EMAIL_TO;
+  // confirmation email — click that link once and every submission after it
+  // sends automatically. No account/API key needed.
+  const FORMSUBMIT_URL = "https://formsubmit.co/82b5afae35bdfa8b7efe6a40c50a7745";
   // ────────────────────────────────────────────────────────────────────────
 
   document.getElementById('dateSubmitted').value = new Date().toISOString().slice(0,10);
@@ -309,17 +357,25 @@
   });
 
   const form = document.getElementById('reqForm');
-  const statusEl = document.getElementById('status');
   const btn = document.getElementById('submitBtn');
   const deliveryFormatErr = document.getElementById('deliveryFormatErr');
+  form.action = FORMSUBMIT_URL;
 
-  form.addEventListener('submit', async (e) => {
+  // This form submits natively (no fetch) so FormSubmit's _autoresponse
+  // feature works — see CONFIG note above. Custom validation + computed
+  // fields still need to run first, so we intercept the first 'submit',
+  // do our prep, then re-fire it programmatically and let it through the
+  // second time. requestSubmit() re-triggers this same listener, which is
+  // why `readyToSubmit` guards against re-validating infinitely.
+  let readyToSubmit = false;
+
+  form.addEventListener('submit', (e) => {
+    if (readyToSubmit) return; // second pass — let the real network submit happen
+
     e.preventDefault();
-    statusEl.className = '';
-    statusEl.style.display = 'none';
     deliveryFormatErr.style.display = 'none';
 
-    const deliveryFormats = Array.from(form.querySelectorAll('input[name="deliveryFormat"]:checked')).map(i => i.value);
+    const deliveryFormats = Array.from(form.querySelectorAll('input[name="deliveryFormat_opt"]:checked')).map(i => i.value);
     if (deliveryFormats.length === 0) {
       deliveryFormatErr.style.display = 'block';
       deliveryFormatErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -328,85 +384,58 @@
 
     const fd = new FormData(form);
     const get = (k) => (fd.get(k) || '').toString().trim();
+    const getChecked = (name) => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value);
 
     const objectiveValues = Array.from(objectivesContainer.querySelectorAll('.obj-input')).map(i => i.value.trim());
     const objectives = objectiveValues.filter(Boolean).map((o, i) => `${i + 1}. ${o}`).join('\n');
-    const outline = [get('outline1'), get('outline2'), get('outline3'), get('outline4'), get('outline5')]
+    const outline = [get('outline1_raw'), get('outline2_raw'), get('outline3_raw'), get('outline4_raw'), get('outline5_raw')]
       .filter(Boolean).map((o, i) => `${i + 1}. ${o}`).join('\n');
 
-    const fields = {
-      presenterName: get('presenterName'),
-      credentials: get('credentials'),
-      unit: get('unit'),
-      email: get('email'),
-      dateSubmitted: get('dateSubmitted'),
-      targetDeliveryDate: get('targetDeliveryDate'),
-      proposedTitle: get('proposedTitle'),
-      focusArea: get('focusArea'),
-      targetAudience: get('targetAudience'),
-      deliveryFormat: deliveryFormats.join('; '),
-      lengthConfirmed: form.lengthConfirmed.checked ? 'Yes' : 'No',
-      learningObjectives: objectives,
-      contentOutline: outline,
-      evidenceSource: get('evidenceSource'),
-      evidenceDate: get('evidenceDate'),
-      cernerWorkflow: get('cernerWorkflow'),
-      tags: get('tags'),
-      serviceLine: get('serviceLine'),
-      fileLink: get('fileLink'),
-      reviewDate: get('reviewDate'),
-      shareBeyondUnit: get('shareBeyondUnit')
-    };
+    const tagsSelected = getChecked('tags_opt');
+    if (get('tagsOther')) tagsSelected.push(get('tagsOther'));
+    const serviceLineSelected = getChecked('serviceLine_opt');
+    if (get('serviceLineOther')) serviceLineSelected.push(get('serviceLineOther'));
+
+    const lengthConfirmedVal = form.lengthConfirmed_cb.checked ? 'Yes' : 'No';
+    const deliveryFormatVal = deliveryFormats.join('; ');
+    const tagsVal = tagsSelected.join('; ');
+    const serviceLineVal = serviceLineSelected.join('; ');
+
+    // Fill the hidden fields that actually get submitted with the joined/
+    // computed values (the raw checkboxes/inputs feeding them were renamed
+    // with _opt/_raw/_cb suffixes precisely so they don't also submit under
+    // these same field names and duplicate rows in the email).
+    document.getElementById('deliveryFormatField').value = deliveryFormatVal;
+    document.getElementById('lengthConfirmedField').value = lengthConfirmedVal;
+    document.getElementById('learningObjectivesField').value = objectives;
+    document.getElementById('contentOutlineField').value = outline;
+    document.getElementById('tagsField').value = tagsVal;
+    document.getElementById('serviceLineField').value = serviceLineVal;
+    document.getElementById('replytoField').value = get('email');
+    document.getElementById('subjectField').value = 'New In-Service Content Request: ' + (get('proposedTitle') || get('presenterName') || 'Untitled');
 
     // Plain-text CSV row (header + values) for a quick copy/paste into Excel,
     // and so a future Outlook-triggered flow can split this one field on
     // commas instead of parsing the whole email body.
-    const csvEscape = (v) => '"' + String(v).replace(/"/g, '""').replace(/\n/g, ' / ') + '"';
-    const csvColumns = Object.keys(fields);
-    const csvHeader = csvColumns.join(',');
-    const csvRow = csvColumns.map(k => csvEscape(fields[k])).join(',');
-
-    const payload = {
-      ...fields,
-      csv_header: csvHeader,
-      csv_row: csvRow,
-      _subject: 'New In-Service Content Request: ' + (fields.proposedTitle || fields.presenterName || 'Untitled'),
-      _template: 'table',
-      _captcha: 'false'
+    const csvFields = {
+      presenterName: get('presenterName'), credentials: get('credentials'), unit: get('unit'),
+      email: get('email'), dateSubmitted: get('dateSubmitted'), targetDeliveryDate: get('targetDeliveryDate'),
+      proposedTitle: get('proposedTitle'), focusArea: get('focusArea'), targetAudience: get('targetAudience'),
+      deliveryFormat: deliveryFormatVal, lengthConfirmed: lengthConfirmedVal, learningObjectives: objectives,
+      contentOutline: outline, evidenceSource: get('evidenceSource'), evidenceDate: get('evidenceDate'),
+      cernerWorkflow: get('cernerWorkflow'), tags: tagsVal, serviceLine: serviceLineVal,
+      fileLink: get('fileLink'), reviewDate: get('reviewDate'), shareBeyondUnit: get('shareBeyondUnit')
     };
+    const csvEscape = (v) => '"' + String(v).replace(/"/g, '""').replace(/\n/g, ' / ') + '"';
+    const csvColumns = Object.keys(csvFields);
+    document.getElementById('csvHeaderField').value = csvColumns.join(',');
+    document.getElementById('csvRowField').value = csvColumns.map(k => csvEscape(csvFields[k])).join(',');
 
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
-    try {
-      const res = await fetch(FORMSUBMIT_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) throw new Error('FormSubmit responded with ' + res.status);
-      const data = await res.json();
-      if (!data.success || data.success === 'false') throw new Error('FormSubmit reported failure');
-
-      statusEl.textContent = 'Submitted. Your NPD team will follow up if anything needs revision before delivery.';
-      statusEl.className = 'ok';
-      form.reset();
-      document.getElementById('dateSubmitted').value = new Date().toISOString().slice(0,10);
-      // drop any dynamically-added objective rows back to the original 3
-      Array.from(objectivesContainer.querySelectorAll('.numbered')).slice(3).forEach(row => row.remove());
-      renumberObjectives();
-      addObjectiveBtn.disabled = false;
-      addObjectiveBtn.textContent = '+ Add another objective';
-      objectiveCapHint.style.display = 'none';
-    } catch (err) {
-      statusEl.textContent = 'Something went wrong sending this — check your connection and try again, or contact your NPD team directly.';
-      statusEl.className = 'err';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Submit Content Request';
-    }
+    readyToSubmit = true;
+    form.requestSubmit();
   });
 </script>
 </body>
