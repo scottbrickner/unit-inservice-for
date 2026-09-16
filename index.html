@@ -178,7 +178,13 @@
 
   <form id="reqForm" method="POST">
     <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
+    <!-- _captcha intentionally NOT set to false: FormSubmit's _autoresponse
+         feature (the auto-reply requesting the presenter's file) requires
+         reCAPTCHA to stay enabled. Disabling it silently breaks autoresponse
+         with no error — confirmed 2026-09-16 after a real test submission
+         got the owner notification but no autoresponse. Submitters will see
+         a brief FormSubmit captcha/redirect step before landing on
+         thank-you.html — accepted trade-off to keep the auto-reply working. -->
     <input type="hidden" name="_next" value="https://scottbrickner.github.io/unit-inservice-for/thank-you.html">
     <input type="hidden" name="_autoresponse" value="Thanks for submitting your Unit In-Service content request! To finish up, please reply directly to THIS email with your presentation, slides, article, or job aid attached (PowerPoint, PDF, Word, or similar). If it's easier, you can instead upload your file to this shared folder: https://keckmedicine-my.sharepoint.com/:f:/g/personal/scott_brickner2_med_usc_edu/IgA6MKtGlnsDQ4o3M2a64yqrAbPJ0jN02zpnGYsF2ge6yCw?e=OVYcSi -- no reply needed if you do that. Your NPD team will follow up if anything needs revision before delivery. Questions? Contact Scott Brickner at scott.brickner2@med.usc.edu.">
     <input type="hidden" name="_subject" id="subjectField" value="New In-Service Content Request">
