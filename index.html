@@ -269,9 +269,12 @@
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────
-  // Paste the "When an HTTP request is received" trigger URL here once the
-  // Power Automate flow is saved (see build guide, Section 3).
-  const FLOW_URL = "https://cb8eafee1f93e9bcaf1dba3760eca1.0d.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/14/workflows/9489fd528c254cdcb95d7f2cd15beb08/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=-0VaHzV8wWrMZ2JeioRo3LtgAAps46u0i8pLe8eBqc8";
+  // Submissions go to FormSubmit.co, which emails the data to this address.
+  // First submission after deploying triggers a one-time "Activate Form"
+  // confirmation email to EMAIL_TO — click that link once and every
+  // submission after it sends automatically. No account/API key needed.
+  const EMAIL_TO = "scott.brickner2@med.usc.edu";
+  const FORMSUBMIT_URL = "https://formsubmit.co/ajax/" + EMAIL_TO;
   // ────────────────────────────────────────────────────────────────────────
 
   document.getElementById('dateSubmitted').value = new Date().toISOString().slice(0,10);
@@ -316,12 +319,6 @@
     statusEl.style.display = 'none';
     deliveryFormatErr.style.display = 'none';
 
-    if (FLOW_URL.indexOf('PASTE_YOUR') === 0) {
-      statusEl.textContent = 'This form isn\'t wired to a flow yet — paste the Power Automate URL into FLOW_URL in the page source.';
-      statusEl.className = 'err';
-      return;
-    }
-
     const deliveryFormats = Array.from(form.querySelectorAll('input[name="deliveryFormat"]:checked')).map(i => i.value);
     if (deliveryFormats.length === 0) {
       deliveryFormatErr.style.display = 'block';
@@ -337,7 +334,7 @@
     const outline = [get('outline1'), get('outline2'), get('outline3'), get('outline4'), get('outline5')]
       .filter(Boolean).map((o, i) => `${i + 1}. ${o}`).join('\n');
 
-    const payload = {
+    const fields = {
       presenterName: get('presenterName'),
       credentials: get('credentials'),
       unit: get('unit'),
@@ -347,8 +344,8 @@
       proposedTitle: get('proposedTitle'),
       focusArea: get('focusArea'),
       targetAudience: get('targetAudience'),
-      deliveryFormat: deliveryFormats,
-      lengthConfirmed: form.lengthConfirmed.checked,
+      deliveryFormat: deliveryFormats.join('; '),
+      lengthConfirmed: form.lengthConfirmed.checked ? 'Yes' : 'No',
       learningObjectives: objectives,
       contentOutline: outline,
       evidenceSource: get('evidenceSource'),
@@ -361,22 +358,37 @@
       shareBeyondUnit: get('shareBeyondUnit')
     };
 
+    // Plain-text CSV row (header + values) for a quick copy/paste into Excel,
+    // and so a future Outlook-triggered flow can split this one field on
+    // commas instead of parsing the whole email body.
+    const csvEscape = (v) => '"' + String(v).replace(/"/g, '""').replace(/\n/g, ' / ') + '"';
+    const csvColumns = Object.keys(fields);
+    const csvHeader = csvColumns.join(',');
+    const csvRow = csvColumns.map(k => csvEscape(fields[k])).join(',');
+
+    const payload = {
+      ...fields,
+      csv_header: csvHeader,
+      csv_row: csvRow,
+      _subject: 'New In-Service Content Request: ' + (fields.proposedTitle || fields.presenterName || 'Untitled'),
+      _template: 'table',
+      _captcha: 'false'
+    };
+
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
     try {
-      // mode:'no-cors' + Content-Type: text/plain avoids the CORS preflight
-      // that a JSON POST would otherwise trigger against the Power Automate
-      // endpoint. The trigger still parses the body as JSON on arrival — see
-      // the build guide's "CORS gotcha" note. Because the response is opaque
-      // under no-cors, we can't confirm success from the reply itself; a
-      // resolved promise here means the request left the browser cleanly.
-      await fetch(FLOW_URL, {
+      const res = await fetch(FORMSUBMIT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       });
+
+      if (!res.ok) throw new Error('FormSubmit responded with ' + res.status);
+      const data = await res.json();
+      if (!data.success || data.success === 'false') throw new Error('FormSubmit reported failure');
 
       statusEl.textContent = 'Submitted. Your NPD team will follow up if anything needs revision before delivery.';
       statusEl.className = 'ok';
